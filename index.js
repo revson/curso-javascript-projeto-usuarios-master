@@ -14,20 +14,30 @@ var user = {};
 // tambem pode ser escrito como arrayfunction
 //fields.forEach((field, index)=>{});
 
-fields.forEach(function(field, index){
 
-    if(field.name == "gender"){
-       
-        if(field.checked === true ){
+
+
+
+document.getElementById("form-user-create").addEventListener("submit", function(event){
+
+    // cancela o comportamento padrao do form
+    event.preventDefault();
+
+    fields.forEach(function(field, index){
+
+        if(field.name == "gender"){
+           
+            if(field.checked === true ){
+                user[field.name] = field.value;
+            }
+    
+        }else{
             user[field.name] = field.value;
         }
+    
+    
+    });
 
-    }else{
-        user[field.name] = field.value;
-    }
-
+    console.log(user);
 
 });
-
-console.log(user);
-
