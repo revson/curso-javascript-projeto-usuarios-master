@@ -17,7 +17,7 @@ var user = {};
 
 
 
-
+// pegamos o evento submit do formulario
 document.getElementById("form-user-create").addEventListener("submit", function(event){
 
     // cancela o comportamento padrao do form
