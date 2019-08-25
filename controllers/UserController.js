@@ -25,10 +25,10 @@ class UserController {
         // Nesta arrow function nao for colocado os () poi tem apenas um paramentro
         this.formEl.addEventListener("submit", event => {
 
-            // cancela o comportamento padrao do form
+            // cancela o evento padrao do form
             event.preventDefault();
 
-            // pega os valores digitados no formulario e nao submete o formulario,
+            // pega os valores digitados no formulario e nao da request no formulario,
             // apenas cria uma linha no grid com os dados do formulario
             this.addLine( this.getValues() );
 
@@ -45,8 +45,14 @@ class UserController {
         // declarando com let, para ficar somente dentro do escopo
         let user = {};
         
-        // vamos rodar o foreach nos elementos do formulario
-        this.formId.elements.forEach(function(field, index){
+        // vamos rodar o foreach nos elementos do formulario.
+        // por se tratar de um objto, nao encontrara o metodo forEach()
+        // entao e usado os [] envolta do objeto para converter em array
+        // mas ai teria outro problema de ficar percorrendo todos os indices do objeto
+        // para isso tem um operador novo chamado Spread (...) antes do this para nao ter que precisar verificar quantos indices
+        // o array vai ter
+        
+        [...this.formEl.elements].forEach(function(field, index){
 
             if(field.name == "gender"){
                
