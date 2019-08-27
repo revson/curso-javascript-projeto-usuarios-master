@@ -28,15 +28,65 @@ class UserController {
             // cancela o evento padrao do form
             event.preventDefault();
 
-            // pega os valores digitados no formulario e nao da request no formulario,
-            // apenas cria uma linha no grid com os dados do formulario
-            this.addLine( this.getValues() );
+            //aqui recriamaos a variavel values para tratar a variavel de imagem
+            let values = this.getValues();            
 
-            
+            //o getFoto com a funcao de parametro
+            this.getFoto((content)=>{
+                
+                //aqui recebe o retorno da funcao de parametro
+                //que a imagem criptografada
+                values.photo = content;
+
+                // pega os valores digitados no formulario e nao da request no formulario,
+                // apenas cria uma linha no grid com os dados do formulario
+                this.addLine( values );
+
+            });            
 
         });
 
     }
+
+    /**
+     * A funcao getFoto tem como paramentro um funcao
+     * A funcao callback retorna o arquivo
+     * @param {*} callback funcao 
+     * 
+     */
+    getFoto(callback){
+        //instancia a classe que trabalha com imagem
+        let fileReader = new FileReader();
+
+        //filtra os elementos do formulario e retorna quando for o campo da imagem
+        let elements = [...this.formEl.elements].filter(item =>{
+            if(item.name === 'photo'){
+                return item;
+            }
+        });
+
+        // aqui como so temos um arquivo de foto, nao percoremos o elemento form, vamos direto no index
+        // 0 do elemento da foto 
+        // elements e files sao colecoes
+        let file = elements[0].files[0];
+
+        //carregando o arquivo
+        fileReader.readAsDataURL(file);
+        
+        // aqui onload recebe uma funcao de retorno callback
+        // apos finalizar o carregamento executa
+        fileReader.onload = ()=>{
+            
+            //passa o velor como retorna da funcao callback
+            //quando chamada o getFoto, usa uma funcao arrowfunction e coloca como parametro
+            // a variavel que ira receber este valor aqui do result
+            callback(fileReader.result);
+        };
+
+        
+
+    }
+
 
     /**
      * Pega os valores dos campos do formulario
@@ -86,7 +136,7 @@ class UserController {
         // usando a crase para fazer um template string
         this.tableEl.innerHTML = `
                     <tr>
-                        <td><img src="dist/img/user1-128x128.jpg" alt="User Image" class="img-circle img-sm"></td>
+                        <td><img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
                         <td>${dataUser.name}</td>
                         <td>${dataUser.email}</td>
                         <td>${dataUser.admin}</td>
