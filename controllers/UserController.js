@@ -31,57 +31,77 @@ class UserController {
             //aqui recriamaos a variavel values para tratar a variavel de imagem
             let values = this.getValues();            
 
-            //o getFoto com a funcao de parametro
-            this.getFoto((content)=>{
-                
-                //aqui recebe o retorno da funcao de parametro
-                //que a imagem criptografada
-                values.photo = content;
+            // o then tem duas funcoes de retorno, a primeira para certo e a segunda para errado
+            // foi usado arrow funcion nos parametros de retorno para evitar conflito com o this que esta 
+            // dentro da funcao
+            this.getFoto().then(
+                (content)=>{
 
-                // pega os valores digitados no formulario e nao da request no formulario,
-                // apenas cria uma linha no grid com os dados do formulario
-                this.addLine( values );
+                    //aqui recebe o retorno da funcao de parametro
+                    //que a imagem criptografada
+                    values.photo = content;
 
-            });            
+                    // pega os valores digitados no formulario e nao da request no formulario,
+                    // apenas cria uma linha no grid com os dados do formulario
+                    this.addLine( values );
+
+                }, 
+                (e)=>{
+                    console.log(e);
+
+                }
+            );      
 
         });
 
     }
 
-    /**
-     * A funcao getFoto tem como paramentro um funcao
-     * A funcao callback retorna o arquivo
-     * @param {*} callback funcao 
-     * 
-     */
-    getFoto(callback){
-        //instancia a classe que trabalha com imagem
-        let fileReader = new FileReader();
+    
+    getFoto(){
 
-        //filtra os elementos do formulario e retorna quando for o campo da imagem
-        let elements = [...this.formEl.elements].filter(item =>{
-            if(item.name === 'photo'){
-                return item;
-            }
+        // esta retornando o resoltado da classe Promessa
+        // usa os paramentros resolve e reject na classe
+        // fica parecido com o try catch para tratamento de erros
+        // quando chamar a funcao getFoto, coloca o metodo then(), 
+        // this.getFoto().then();
+        return new Promise((resolve, reject)=>{
+
+            //instancia a classe que trabalha com imagem
+            let fileReader = new FileReader();
+
+            //filtra os elementos do formulario e retorna quando for o campo da imagem
+            let elements = [...this.formEl.elements].filter(item =>{
+                if(item.name === 'photo'){
+                    return item;
+                }
+            });
+
+            // aqui como so temos um arquivo de foto, nao percoremos o elemento form, vamos direto no index
+            // 0 do elemento da foto 
+            // elements e files sao colecoes
+            let file = elements[0].files[0];
+
+              
+            // aqui onload recebe uma funcao de retorno callback
+            // apos finalizar o carregamento executa
+            fileReader.onload = ()=>{
+                
+                //O resolve retorna o resultado do conteudo do arquivo
+                resolve(fileReader.result);
+            };
+
+            //case tenha algum erro, retorna o erro no reject da promessa
+            fileReader.onerror = (e)=>{
+                reject(e);
+            };
+
+            //carregando o arquivo
+            fileReader.readAsDataURL(file);
+
+
         });
 
-        // aqui como so temos um arquivo de foto, nao percoremos o elemento form, vamos direto no index
-        // 0 do elemento da foto 
-        // elements e files sao colecoes
-        let file = elements[0].files[0];
-
-        //carregando o arquivo
-        fileReader.readAsDataURL(file);
         
-        // aqui onload recebe uma funcao de retorno callback
-        // apos finalizar o carregamento executa
-        fileReader.onload = ()=>{
-            
-            //passa o velor como retorna da funcao callback
-            //quando chamada o getFoto, usa uma funcao arrowfunction e coloca como parametro
-            // a variavel que ira receber este valor aqui do result
-            callback(fileReader.result);
-        };
 
         
 
