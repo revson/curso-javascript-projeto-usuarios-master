@@ -28,6 +28,10 @@ class UserController {
             // cancela o evento padrao do form
             event.preventDefault();
 
+            let btn = this.formEl.querySelector("[type=submit]");
+
+            btn.disabled = true;
+
             //aqui recriamaos a variavel values para tratar a variavel de imagem
             let values = this.getValues();            
 
@@ -44,6 +48,10 @@ class UserController {
                     // pega os valores digitados no formulario e nao da request no formulario,
                     // apenas cria uma linha no grid com os dados do formulario
                     this.addLine( values );
+                                     
+                    this.formEl.reset();
+
+                    btn.disabled = false;
 
                 }, 
                 (e)=>{
@@ -170,7 +178,7 @@ class UserController {
             <td>${dataUser.name}</td>
             <td>${dataUser.email}</td>
             <td>${(dataUser.admin) ? 'Sim' : 'Não'}</td>
-            <td>${dataUser.birth}</td>
+            <td>${dataUser.register}</td>
             <td>
             <button type="button" class="btn btn-primary btn-xs btn-flat">Editar</button>
             <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
