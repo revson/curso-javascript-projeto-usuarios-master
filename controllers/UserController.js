@@ -127,6 +127,9 @@ class UserController {
     getValues(){
         // declarando com let, para ficar somente dentro do escopo
         let user = {};
+
+        // varialve de verificacao de validade do formulario
+        let isValid = true;
         
         // vamos rodar o foreach nos elementos do formulario.
         // por se tratar de um objto, nao encontrara o metodo forEach()
@@ -136,6 +139,14 @@ class UserController {
         // o array vai ter
         
         [...this.formEl.elements].forEach(function(field, index){
+
+            // verifica se tem o campo requerido e se esta vazio
+            if(["name", "email", "password"].indexOf(field.name) > -1 && !field.value){
+
+                field.parentElement.classList.add("has-error");
+                isValid = false;
+
+            }
 
             if(field.name == "gender"){
                
@@ -153,6 +164,11 @@ class UserController {
         
         
         });
+
+        //retorna se o formulario for invalido, como se fosse um break
+        if(!isValid){
+            return false;
+        }
         
         // retornado direto a resposta da classe
         return new User(
