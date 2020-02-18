@@ -33,7 +33,11 @@ class UserController {
             btn.disabled = true;
 
             //aqui recriamaos a variavel values para tratar a variavel de imagem
-            let values = this.getValues();            
+            let values = this.getValues();    
+            
+            if(!values){
+                return false;
+            }
 
             // o then tem duas funcoes de retorno, a primeira para certo e a segunda para errado
             // foi usado arrow funcion nos parametros de retorno para evitar conflito com o this que esta 
@@ -188,6 +192,9 @@ class UserController {
         
         let tr = document.createElement("tr");
 
+        // converte os dados para string e coloca na variavel
+        tr.dataset.user = JSON.stringify(dataUser);
+
         // usando a crase para fazer um template string
         tr.innerHTML = `
             <td><img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
@@ -203,8 +210,38 @@ class UserController {
 
         this.tableEl.appendChild(tr);
         
+        //atualiza as estatisticas
+        this.updateCount();
     
         
+    }
+
+    updateCount(){
+
+        let numberUsers = 0;
+        let numberAdmin = 0;
+
+        // this.tableEl.children nao e um array, abaixo usamos um Spread (...) para converter para array
+        [...this.tableEl.children].forEach(tr=>{
+
+            numberUsers++;
+
+            // converte os dados em objeto novamente e coloca na variavel
+            let user = JSON.parse(tr.dataset.user);
+
+            if(user._admin){
+                numberAdmin++;
+            }
+            
+
+        });
+
+        document.querySelector("#number-users").innerHTML = numberUsers;
+        document.querySelector("#number-users-admin").innerHTML = numberAdmin;
+
+
+        
+
     }
     
 }
